@@ -4,5 +4,6 @@ from gitingest.cloning import clone_repo
 from gitingest.entrypoint import ingest, ingest_async
 from gitingest.ingestion import ingest_query
 from gitingest.query_parsing import parse_query
+from gitingest.utils.tokenizer import Tokenizer
 
-__all__ = ["ingest_query", "clone_repo", "parse_query", "ingest", "ingest_async"]
+__all__ = ["ingest_query", "clone_repo", "parse_query", "ingest", "ingest_async", "Tokenizer"]

@@ -21,6 +21,7 @@ from gitingest.utils.query_parser_utils import (
     _validate_host,
     _validate_url_scheme,
 )
+from gitingest.utils.tokenizer import Tokenizer
 
 
 async def parse_query(
@@ -29,6 +30,7 @@ async def parse_query(
     from_web: bool,
     include_patterns: Optional[Union[str, Set[str]]] = None,
     ignore_patterns: Optional[Union[str, Set[str]]] = None,
+    model_tokenizer: Optional[Tokenizer] = None,
 ) -> IngestionQuery:
     """
     Parse the input source (URL or path) to extract relevant details for the query.
@@ -91,6 +93,7 @@ async def parse_query(
         max_file_size=max_file_size,
         ignore_patterns=ignore_patterns_set,
         include_patterns=parsed_include,
+        model_tokenizer=model_tokenizer
     )
 
 

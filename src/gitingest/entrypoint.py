@@ -9,6 +9,7 @@ from gitingest.cloning import clone_repo
 from gitingest.config import TMP_BASE_PATH
 from gitingest.ingestion import ingest_query
 from gitingest.query_parsing import IngestionQuery, parse_query
+from gitingest.utils.tokenizer import Tokenizer
 
 
 async def ingest_async(
@@ -18,6 +19,7 @@ async def ingest_async(
     exclude_patterns: Optional[Union[str, Set[str]]] = None,
     branch: Optional[str] = None,
     output: Optional[str] = None,
+    model_tokenizer: Optional[Tokenizer] = None,
 ) -> Tuple[str, str, str]:
     """
     Main entry point for ingesting a source and processing its contents.
@@ -64,6 +66,7 @@ async def ingest_async(
             from_web=False,
             include_patterns=include_patterns,
             ignore_patterns=exclude_patterns,
+            model_tokenizer=model_tokenizer
         )
 
         if query.url:

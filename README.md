@@ -163,7 +163,8 @@ Gitingest aims to be friendly for first time contributors, with a simple Python 
 - [Tailwind CSS](https://tailwindcss.com) - Frontend
 - [FastAPI](https://github.com/fastapi/fastapi) - Backend framework
 - [Jinja2](https://jinja.palletsprojects.com) - HTML templating
-- [tiktoken](https://github.com/openai/tiktoken) - Token estimation
+- [tiktoken](https://github.com/openai/tiktoken) - OpenAi Token estimation
+- [google-cloud-aiplatform](https://github.com/googleapis/python-aiplatform) - Google Gemini token estimation
 - [posthog](https://github.com/PostHog/posthog) - Amazing analytics
 
 ### Looking for a JavaScript/FileSystemNode package?

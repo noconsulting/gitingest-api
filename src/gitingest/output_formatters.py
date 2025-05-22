@@ -3,9 +3,11 @@
 from typing import Optional, Tuple
 
 import tiktoken
+from vertexai.preview.tokenization import get_tokenizer_for_model
 
 from gitingest.query_parsing import IngestionQuery
 from gitingest.schemas import FileSystemNode, FileSystemNodeType
+from gitingest.utils.tokenizer import Tokenizer
 
 
 def format_node(node: FileSystemNode, query: IngestionQuery) -> Tuple[str, str, str]:
@@ -39,8 +41,8 @@ def format_node(node: FileSystemNode, query: IngestionQuery) -> Tuple[str, str, 
     _create_tree_structure(query, node)
 
     content = _gather_file_contents(node)
-
-    token_estimate = _format_token_count(tree + content)
+    print(f"llm_model selected : {query.model_tokenizer}")
+    token_estimate = _format_token_count(tree + content, query.model_tokenizer)
     if token_estimate:
         summary += f"\nEstimated tokens: {token_estimate}"
 
@@ -154,7 +156,7 @@ def _create_tree_structure(query: IngestionQuery, node: FileSystemNode, prefix: 
     return tree_str
 
 
-def _format_token_count(text: str) -> Optional[str]:
+def _format_token_count(text: str, model_tokenizer: Tokenizer | None) -> Optional[str]:
     """
     Return a human-readable string representing the token count of the given text.
 
@@ -170,13 +172,22 @@ def _format_token_count(text: str) -> Optional[str]:
     str, optional
         The formatted number of tokens as a string (e.g., '1.2k', '1.2M'), or `None` if an error occurs.
     """
+    if model_tokenizer is None:
+        return None
+
+    total_tokens = calculate_token_count(text, model_tokenizer)
+    return reformat_token(total_tokens)
+
+def calculate_token_count(text: str, tokenizer: Tokenizer) -> int | None:
     try:
-        encoding = tiktoken.get_encoding("cl100k_base")
-        total_tokens = len(encoding.encode(text, disallowed_special=()))
+        encoding = tokenizer.encoding_function()
+        total_tokens = tokenizer.token_count_function(encoding, text)
     except (ValueError, UnicodeEncodeError) as exc:
         print(exc)
         return None
+    return total_tokens
 
+def reformat_token(total_tokens: int) -> str:
     if total_tokens >= 1_000_000:
         return f"{total_tokens / 1_000_000:.1f}M"
 
