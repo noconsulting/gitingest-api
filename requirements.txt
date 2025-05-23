@@ -8,3 +8,4 @@ tiktoken
 tomli
 uvicorn>=0.11.7  # Vulnerable to https://osv.dev/vulnerability/PYSEC-2020-150
 google-cloud-aiplatform
+sentencepiece
