@@ -43,7 +43,7 @@ async def ingest_async(
         The branch to clone and ingest. If `None`, the default branch is used.
     output : str, optional
         File path where the summary and content should be written. If `None`, the results are not written to a file.
-    model_tokenizer: Tokenizer, optional
+    model_tokenizer: Tokenizer
         LLM model to use the tokenizer of the targeted LLM (Examples: Tokenizer.GEMINI_1_5_PRO, Tokenizer.OPEN_AI)
 
     Returns
@@ -68,7 +68,7 @@ async def ingest_async(
             from_web=False,
             include_patterns=include_patterns,
             ignore_patterns=exclude_patterns,
-            model_tokenizer=model_tokenizer
+            model_tokenizer=model_tokenizer,
         )
 
         if query.url:

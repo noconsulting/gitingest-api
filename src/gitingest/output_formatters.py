@@ -2,9 +2,6 @@
 
 from typing import Optional, Tuple
 
-import tiktoken
-from vertexai.preview.tokenization import get_tokenizer_for_model
-
 from gitingest.query_parsing import IngestionQuery
 from gitingest.schemas import FileSystemNode, FileSystemNodeType
 from gitingest.utils.tokenizer import Tokenizer
@@ -153,6 +150,7 @@ def _create_tree_structure(query: IngestionQuery, node: FileSystemNode, prefix: 
         for i, child in enumerate(node.children):
             tree_str += _create_tree_structure(query, node=child, prefix=prefix, is_last=i == len(node.children) - 1)
     return tree_str
+
 
 def _calculate_and_format_token_count(text: str, model_tokenizer: Optional[Tokenizer]) -> Optional[str]:
     """

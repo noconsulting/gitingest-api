@@ -41,7 +41,7 @@ def sample_query() -> IngestionQuery:
         max_file_size=1_000_000,
         ignore_patterns={"*.pyc", "__pycache__", ".git"},
         include_patterns=None,
-        model_tokenizer=Tokenizer.GEMINI_1_5_PRO
+        model_tokenizer=Tokenizer.GEMINI_1_5_PRO,
     )
 
 

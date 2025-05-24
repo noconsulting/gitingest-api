@@ -51,7 +51,8 @@ async def parse_query(
         Patterns to include, by default None. Can be a set of strings or a single string.
     ignore_patterns : Union[str, Set[str]], optional
         Patterns to ignore, by default None. Can be a set of strings or a single string.
-
+    model_tokenizer: Tokenizer, optional
+        LLM model to use the tokenizer of the targeted LLM (Examples: Tokenizer.GEMINI_1_5_PRO, Tokenizer.OPEN_AI)
     Returns
     -------
     IngestionQuery
@@ -93,7 +94,7 @@ async def parse_query(
         max_file_size=max_file_size,
         ignore_patterns=ignore_patterns_set,
         include_patterns=parsed_include,
-        model_tokenizer=model_tokenizer
+        model_tokenizer=model_tokenizer,
     )
 
 

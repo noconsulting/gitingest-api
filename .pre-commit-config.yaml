@@ -105,6 +105,8 @@ repos:
             tiktoken,
             tomli,
             uvicorn>=0.11.7,
+            "google-cloud-aiplatform",
+            "sentencepiece",
           ]
       - id: pylint
         name: pylint for tests
