@@ -19,7 +19,7 @@ async def ingest_async(
     exclude_patterns: Optional[Union[str, Set[str]]] = None,
     branch: Optional[str] = None,
     output: Optional[str] = None,
-    model_tokenizer: Optional[Tokenizer] = None,
+    model_tokenizer: Tokenizer = Tokenizer.OPEN_AI,
 ) -> Tuple[str, str, str]:
     """
     Main entry point for ingesting a source and processing its contents.

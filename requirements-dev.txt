@@ -4,4 +4,5 @@ djlint
 pre-commit
 pylint
 pytest
+pytest-mock
 pytest-asyncio

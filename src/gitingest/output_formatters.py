@@ -41,8 +41,7 @@ def format_node(node: FileSystemNode, query: IngestionQuery) -> Tuple[str, str, 
     _create_tree_structure(query, node)
 
     content = _gather_file_contents(node)
-    print(f"llm_model selected : {query.model_tokenizer}")
-    token_estimate = _format_token_count(tree + content, query.model_tokenizer)
+    token_estimate = _calculate_and_format_token_count(tree + content, query.model_tokenizer)
     if token_estimate:
         summary += f"\nEstimated tokens: {token_estimate}"
 
@@ -155,39 +154,91 @@ def _create_tree_structure(query: IngestionQuery, node: FileSystemNode, prefix: 
             tree_str += _create_tree_structure(query, node=child, prefix=prefix, is_last=i == len(node.children) - 1)
     return tree_str
 
-
-def _format_token_count(text: str, model_tokenizer: Tokenizer | None) -> Optional[str]:
+def _calculate_and_format_token_count(text: str, model_tokenizer: Optional[Tokenizer]) -> Optional[str]:
     """
-    Return a human-readable string representing the token count of the given text.
+    Calculate and format the token count of the given text into a human-readable string.
 
-    E.g., '120' -> '120', '1200' -> '1.2k', '1200000' -> '1.2M'.
+    Examples:
+        '120' -> '120'
+        '1200' -> '1.2k'
+        '1200000' -> '1.2M'
 
     Parameters
     ----------
     text : str
         The text string for which the token count is to be estimated.
+    model_tokenizer : Optional[Tokenizer]
+        The tokenizer to use for counting tokens. If None, the function will return None.
 
     Returns
     -------
     str, optional
-        The formatted number of tokens as a string (e.g., '1.2k', '1.2M'), or `None` if an error occurs.
+        The formatted number of tokens as a string (e.g., '1.2k', '1.2M'),
+        or `None` if `model_tokenizer` is None or if an error occurs during token calculation.
     """
     if model_tokenizer is None:
         return None
 
-    total_tokens = calculate_token_count(text, model_tokenizer)
-    return reformat_token(total_tokens)
+    token_count = _calculate_token_count(text, model_tokenizer)
 
-def calculate_token_count(text: str, tokenizer: Tokenizer) -> int | None:
+    if token_count == -1:
+        return None
+
+    return _reformat_token_count(token_count)
+
+
+def _calculate_token_count(text: str, tokenizer: Tokenizer) -> int:
+    """
+    Calculate the number of tokens in the given text using the provided tokenizer.
+
+    Parameters
+    ----------
+    text : str
+        The text string to count tokens from.
+    tokenizer : Tokenizer
+        The tokenizer instance with `encoding_function` and `token_count_function` methods.
+
+    Returns
+    -------
+    int
+        The total number of tokens in the text. Returns -1 if a ValueError
+        or UnicodeEncodeError occurs during tokenization.
+    """
     try:
         encoding = tokenizer.encoding_function()
         total_tokens = tokenizer.token_count_function(encoding, text)
     except (ValueError, UnicodeEncodeError) as exc:
         print(exc)
-        return None
+        return -1
     return total_tokens
 
-def reformat_token(total_tokens: int) -> str:
+
+def _reformat_token_count(total_tokens: int) -> str:
+    """
+    Reformat a token count into a human-readable string with suffixes (k, M).
+
+    Parameters
+    ----------
+    total_tokens : int
+        The total number of tokens.
+
+    Returns
+    -------
+    str
+        A string representation of the token count.
+        - If tokens >= 1,000,000, appends 'M' (e.g., "1.2M").
+        - If tokens >= 1,000, appends 'k' (e.g., "1.2k").
+        - Otherwise, returns the number as a string.
+
+    Examples
+    --------
+    >>> _reformat_token_count(120)
+    '120'
+    >>> _reformat_token_count(1200)
+    '1.2k'
+    >>> _reformat_token_count(1200000)
+    '1.2M'
+    """
     if total_tokens >= 1_000_000:
         return f"{total_tokens / 1_000_000:.1f}M"
 

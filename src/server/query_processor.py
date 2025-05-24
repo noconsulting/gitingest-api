@@ -5,6 +5,7 @@ from functools import partial
 from fastapi import Request
 from starlette.templating import _TemplateResponse
 
+from gitingest import Tokenizer
 from gitingest.cloning import clone_repo
 from gitingest.ingestion import ingest_query
 from gitingest.query_parsing import IngestionQuery, parse_query
@@ -80,6 +81,7 @@ async def process_query(
             from_web=True,
             include_patterns=include_patterns,
             ignore_patterns=exclude_patterns,
+            model_tokenizer=Tokenizer.OPEN_AI, # we default to openAI token estimation (tiktoken)
         )
         if not query.url:
             raise ValueError("The 'url' parameter is required.")

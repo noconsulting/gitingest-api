@@ -11,6 +11,7 @@ from typing import Any, Callable, Dict
 
 import pytest
 
+from gitingest import Tokenizer
 from gitingest.query_parsing import IngestionQuery
 
 WriteNotebookFunc = Callable[[str, Dict[str, Any]], Path]
@@ -40,6 +41,7 @@ def sample_query() -> IngestionQuery:
         max_file_size=1_000_000,
         ignore_patterns={"*.pyc", "__pycache__", ".git"},
         include_patterns=None,
+        model_tokenizer=Tokenizer.GEMINI_1_5_PRO
     )
 
 
