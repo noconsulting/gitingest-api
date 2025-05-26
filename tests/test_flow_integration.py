@@ -55,7 +55,8 @@ def cleanup():
 
 
 @pytest.mark.asyncio
-async def test_remote_repository_analysis(request):
+@pytest.mark.parametrize("tokenizer", ["OPEN_AI", "GEMINI_1_5_PRO"])
+async def test_remote_repository_analysis(request, tokenizer):
     """Test the complete flow of analyzing a remote repository."""
     client = request.getfixturevalue("test_client")
     form_data = {
@@ -63,6 +64,7 @@ async def test_remote_repository_analysis(request):
         "max_file_size": "243",
         "pattern_type": "exclude",
         "pattern": "",
+        "tokenizer": tokenizer
     }
 
     response = client.post("/", data=form_data)
@@ -71,7 +73,8 @@ async def test_remote_repository_analysis(request):
 
 
 @pytest.mark.asyncio
-async def test_invalid_repository_url(request):
+@pytest.mark.parametrize("tokenizer", ["OPEN_AI", "GEMINI_1_5_PRO"])
+async def test_invalid_repository_url(request, tokenizer):
     """Test handling of an invalid repository URL."""
     client = request.getfixturevalue("test_client")
     form_data = {
@@ -79,6 +82,7 @@ async def test_invalid_repository_url(request):
         "max_file_size": "243",
         "pattern_type": "exclude",
         "pattern": "",
+        "tokenizer": tokenizer
     }
 
     response = client.post("/", data=form_data)
@@ -87,7 +91,8 @@ async def test_invalid_repository_url(request):
 
 
 @pytest.mark.asyncio
-async def test_large_repository(request):
+@pytest.mark.parametrize("tokenizer", ["OPEN_AI", "GEMINI_1_5_PRO"])
+async def test_large_repository(request, tokenizer):
     """Simulate analysis of a large repository with nested folders."""
     client = request.getfixturevalue("test_client")
     form_data = {
@@ -95,6 +100,7 @@ async def test_large_repository(request):
         "max_file_size": "243",
         "pattern_type": "exclude",
         "pattern": "",
+        "tokenizer": tokenizer
     }
 
     response = client.post("/", data=form_data)
@@ -103,7 +109,8 @@ async def test_large_repository(request):
 
 
 @pytest.mark.asyncio
-async def test_concurrent_requests(request):
+@pytest.mark.parametrize("tokenizer", ["OPEN_AI", "GEMINI_1_5_PRO"])
+async def test_concurrent_requests(request, tokenizer):
     """Test handling of multiple concurrent requests."""
     client = request.getfixturevalue("test_client")
 
@@ -113,6 +120,7 @@ async def test_concurrent_requests(request):
             "max_file_size": "243",
             "pattern_type": "exclude",
             "pattern": "",
+            "tokenizer": tokenizer
         }
         response = client.post("/", data=form_data)
         assert response.status_code == 200, f"Request failed: {response.text}"
@@ -125,7 +133,8 @@ async def test_concurrent_requests(request):
 
 
 @pytest.mark.asyncio
-async def test_large_file_handling(request):
+@pytest.mark.parametrize("tokenizer", ["OPEN_AI", "GEMINI_1_5_PRO"])
+async def test_large_file_handling(request, tokenizer):
     """Test handling of repositories with large files."""
     client = request.getfixturevalue("test_client")
     form_data = {
@@ -133,6 +142,7 @@ async def test_large_file_handling(request):
         "max_file_size": "1",
         "pattern_type": "exclude",
         "pattern": "",
+        "tokenizer": tokenizer
     }
 
     response = client.post("/", data=form_data)
@@ -141,7 +151,8 @@ async def test_large_file_handling(request):
 
 
 @pytest.mark.asyncio
-async def test_repository_with_patterns(request):
+@pytest.mark.parametrize("tokenizer", ["OPEN_AI", "GEMINI_1_5_PRO"])
+async def test_repository_with_patterns(request, tokenizer):
     """Test repository analysis with include/exclude patterns."""
     client = request.getfixturevalue("test_client")
     form_data = {
@@ -149,6 +160,7 @@ async def test_repository_with_patterns(request):
         "max_file_size": "243",
         "pattern_type": "include",
         "pattern": "*.md",
+        "tokenizer": tokenizer
     }
 
     response = client.post("/", data=form_data)

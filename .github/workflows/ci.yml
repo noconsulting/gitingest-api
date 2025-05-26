@@ -41,7 +41,7 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest
+        TESTING=true pytest
 
     #  Run pre-commit only on Python 3.13 + ubuntu.
     - name: Run pre-commit hooks
