@@ -45,7 +45,7 @@ def format_node(node: FileSystemNode, query: IngestionQuery) -> Tuple[str, str, 
         summary += f"\nEstimated tokens: {token_estimate}"
         summary += f"\nTokenizer: {query.model_tokenizer}"
     else:
-        summary += "\nNo estimated tokens."
+        summary += "\nNo estimated token."
 
     return summary, tree, content
 

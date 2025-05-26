@@ -27,6 +27,7 @@ def test_run_ingest_query(temp_directory: Path, sample_query: IngestionQuery) ->
 
     assert "Repository: test_user/test_repo" in summary
     assert "Files analyzed: 8" in summary
+    assert "No estimated token." in summary
 
     # Check presence of key files in the content
     assert "src/subfile1.txt" in content
