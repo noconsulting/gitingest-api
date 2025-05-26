@@ -11,7 +11,6 @@ from typing import Any, Callable, Dict
 
 import pytest
 
-from gitingest import Tokenizer
 from gitingest.query_parsing import IngestionQuery
 
 WriteNotebookFunc = Callable[[str, Dict[str, Any]], Path]
