@@ -17,6 +17,10 @@
             element.classList.toggle('hover:text-gray-500');
         });
     }
+
+    function changeTokenizer(element) {
+        document.getElementById("tokenizer-input").value = element.value;
+    }
 </script>
 <div class="relative">
     <div class="w-full h-full absolute inset-0 bg-gray-900 rounded-xl translate-y-2 translate-x-2"></div>
@@ -25,6 +29,7 @@
              class="absolute md:block hidden left-0 h-[4.5rem] w-[4.5rem] bottom-0 -translate-x-full ml-3">
         <form class="flex md:flex-row flex-col w-full h-full justify-center items-stretch space-y-5 md:space-y-0 md:space-x-5"
               id="ingestForm"
+              action="/"
               onsubmit="handleSubmit(event{% if is_index %}, true{% endif %})">
             <div class="relative w-full h-full">
                 <div class="w-full h-full rounded bg-gray-900 translate-y-1 translate-x-1 absolute inset-0 z-10"></div>
@@ -45,6 +50,10 @@
             </div>
             <input type="hidden" name="pattern_type" value="exclude">
             <input type="hidden" name="pattern" value="">
+            <input id="tokenizer-input"
+                   type="hidden"
+                   name="tokenizer"
+                   {% if tokenizer=='OPEN_AI' %}value="OPEN_AI"{% elif tokenizer=='GEMINI_1_5_PRO' %}value="GEMINI_1_5_PRO"{% else %}value="NONE"{% endif %}>
         </form>
         <div class="mt-4 relative z-20 flex flex-wrap gap-4 items-start">
             <!-- Pattern selector -->
@@ -95,6 +104,34 @@
                        required
                        value="{{ default_file_size }}"
                        class="w-full h-3 bg-[#FAFAFA] bg-no-repeat bg-[length:50%_100%] bg-[#ebdbb7] appearance-none border-[3px] border-gray-900 rounded-sm focus:outline-none bg-gradient-to-r from-[#FE4A60] to-[#FE4A60] [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-7 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-sm [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:border-solid [&::-webkit-slider-thumb]:border-[3px] [&::-webkit-slider-thumb]:border-gray-900 [&::-webkit-slider-thumb]:shadow-[3px_3px_0_#000]  ">
+            </div>
+            <div class="mt-4 ml-8">
+                <div class="relative">
+                    <div class="w-full h-full rounded bg-gray-900 translate-y-1 translate-x-1 absolute inset-0 z-10"></div>
+                    <div class="flex relative z-20 border-[3px] border-gray-900 rounded bg-white">
+                        <div class="relative flex items-center">
+                            <select id="tokenizer_type"
+                                    onchange="changeTokenizer(this)"
+                                    name="pattern_type"
+                                    class="w-21 py-2 pl-2 pr-6 appearance-none bg-[#e6e8eb] focus:outline-none border-gray-900">
+                                <option value="OPEN_AI" {% if tokenizer=='OPEN_AI' %}selected{% endif %}>OpenAI</option>
+                                <option value="GEMINI_1_5_PRO"
+                                        {% if tokenizer=='GEMINI_1_5_PRO' %}selected{% endif %}>Gemini 1.5 Pro</option>
+                                <option value="NONE" {% if tokenizer=='NONE' %}selected{% endif %}>None</option>
+                            </select>
+                            <svg class="absolute right-2 w-4 h-4 pointer-events-none"
+                                 xmlns="http://www.w3.org/2000/svg"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         {% if show_examples %}

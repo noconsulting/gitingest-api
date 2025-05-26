@@ -82,5 +82,6 @@ async def process_catch_all(
         max_file_size,
         pattern_type,
         pattern,
-        is_index=False,
+        False,
+        "OPEN_AI",  # when no parameter is possible, we default to openAI
     )

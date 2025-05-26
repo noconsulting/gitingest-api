@@ -2,6 +2,7 @@
 
 import asyncio
 import math
+import os
 import shutil
 import time
 from contextlib import asynccontextmanager
@@ -17,7 +18,12 @@ from gitingest.config import TMP_BASE_PATH
 from server.server_config import DELETE_REPO_AFTER
 
 # Initialize a rate limiter
-limiter = Limiter(key_func=get_remote_address)
+IS_TESTING = os.environ.get("TESTING", "false").lower() == "true"
+
+limiter = Limiter(
+    key_func=get_remote_address,
+    enabled=not IS_TESTING,
+)
 
 
 async def rate_limit_exception_handler(request: Request, exc: Exception) -> Response:

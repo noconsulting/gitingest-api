@@ -47,6 +47,7 @@ async def index_post(
     max_file_size: int = Form(...),
     pattern_type: str = Form(...),
     pattern: str = Form(...),
+    tokenizer: str = Form(...),
 ) -> HTMLResponse:
     """
     Process the form submission with user input for query parameters.
@@ -67,6 +68,8 @@ async def index_post(
         The type of pattern used for the query, specified by the user.
     pattern : str
         The pattern string used in the query, specified by the user.
+    tokenizer: str
+        Selected tokenizer for LLM model
 
     Returns
     -------
@@ -74,11 +77,4 @@ async def index_post(
         An HTML response containing the results of processing the form input and query logic,
         which will be rendered and returned to the user.
     """
-    return await process_query(
-        request,
-        input_text,
-        max_file_size,
-        pattern_type,
-        pattern,
-        is_index=True,
-    )
+    return await process_query(request, input_text, max_file_size, pattern_type, pattern, True, tokenizer)
