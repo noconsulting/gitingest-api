@@ -49,6 +49,7 @@ def format_node(node: FileSystemNode, query: IngestionQuery) -> Tuple[str, str, 
 
     return summary, tree, content
 
+
 def _create_summary_prefix(query: IngestionQuery, single_file: bool = False) -> str:
     """
     Create a prefix string for summarizing a repository or local directory.

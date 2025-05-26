@@ -25,6 +25,7 @@ limiter = Limiter(
     enabled=not IS_TESTING,
 )
 
+
 async def rate_limit_exception_handler(request: Request, exc: Exception) -> Response:
     """
     Custom exception handler for rate-limiting errors.

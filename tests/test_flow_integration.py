@@ -64,7 +64,7 @@ async def test_remote_repository_analysis(request, tokenizer):
         "max_file_size": "243",
         "pattern_type": "exclude",
         "pattern": "",
-        "tokenizer": tokenizer
+        "tokenizer": tokenizer,
     }
 
     response = client.post("/", data=form_data)
@@ -82,7 +82,7 @@ async def test_invalid_repository_url(request, tokenizer):
         "max_file_size": "243",
         "pattern_type": "exclude",
         "pattern": "",
-        "tokenizer": tokenizer
+        "tokenizer": tokenizer,
     }
 
     response = client.post("/", data=form_data)
@@ -100,7 +100,7 @@ async def test_large_repository(request, tokenizer):
         "max_file_size": "243",
         "pattern_type": "exclude",
         "pattern": "",
-        "tokenizer": tokenizer
+        "tokenizer": tokenizer,
     }
 
     response = client.post("/", data=form_data)
@@ -120,7 +120,7 @@ async def test_concurrent_requests(request, tokenizer):
             "max_file_size": "243",
             "pattern_type": "exclude",
             "pattern": "",
-            "tokenizer": tokenizer
+            "tokenizer": tokenizer,
         }
         response = client.post("/", data=form_data)
         assert response.status_code == 200, f"Request failed: {response.text}"
@@ -142,7 +142,7 @@ async def test_large_file_handling(request, tokenizer):
         "max_file_size": "1",
         "pattern_type": "exclude",
         "pattern": "",
-        "tokenizer": tokenizer
+        "tokenizer": tokenizer,
     }
 
     response = client.post("/", data=form_data)
@@ -160,7 +160,7 @@ async def test_repository_with_patterns(request, tokenizer):
         "max_file_size": "243",
         "pattern_type": "include",
         "pattern": "*.md",
-        "tokenizer": tokenizer
+        "tokenizer": tokenizer,
     }
 
     response = client.post("/", data=form_data)

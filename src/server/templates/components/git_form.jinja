@@ -50,7 +50,10 @@
             </div>
             <input type="hidden" name="pattern_type" value="exclude">
             <input type="hidden" name="pattern" value="">
-            <input id="tokenizer-input" type="hidden" name="tokenizer" {% if tokenizer=='OPEN_AI' %}value="OPEN_AI"{% elif tokenizer=='GEMINI_1_5_PRO' %}value="GEMINI_1_5_PRO"{% else %}value="NONE"{% endif %}>
+            <input id="tokenizer-input"
+                   type="hidden"
+                   name="tokenizer"
+                   {% if tokenizer=='OPEN_AI' %}value="OPEN_AI"{% elif tokenizer=='GEMINI_1_5_PRO' %}value="GEMINI_1_5_PRO"{% else %}value="NONE"{% endif %}>
         </form>
         <div class="mt-4 relative z-20 flex flex-wrap gap-4 items-start">
             <!-- Pattern selector -->
@@ -65,7 +68,7 @@
                                     class="w-21 py-2 pl-2 pr-6 appearance-none bg-[#e6e8eb] focus:outline-none border-r-[3px] border-gray-900">
                                 <option value="exclude"
                                         {% if pattern_type == 'exclude' or not pattern_type %}selected{% endif %}>
-                                Exclude
+                                    Exclude
                                 </option>
                                 <option value="include" {% if pattern_type == 'include' %}selected{% endif %}>Include</option>
                             </select>
@@ -77,7 +80,7 @@
                                  stroke-width="2"
                                  stroke-linecap="round"
                                  stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"/>
+                                <polyline points="6 9 12 15 18 9" />
                             </svg>
                         </div>
                         <input type="text"
@@ -112,7 +115,8 @@
                                     name="pattern_type"
                                     class="w-21 py-2 pl-2 pr-6 appearance-none bg-[#e6e8eb] focus:outline-none border-gray-900">
                                 <option value="OPEN_AI" {% if tokenizer=='OPEN_AI' %}selected{% endif %}>OpenAI</option>
-                                <option value="GEMINI_1_5_PRO" {% if tokenizer=='GEMINI_1_5_PRO' %}selected{% endif %}>Gemini 1.5 Pro</option>
+                                <option value="GEMINI_1_5_PRO"
+                                        {% if tokenizer=='GEMINI_1_5_PRO' %}selected{% endif %}>Gemini 1.5 Pro</option>
                                 <option value="NONE" {% if tokenizer=='NONE' %}selected{% endif %}>None</option>
                             </select>
                             <svg class="absolute right-2 w-4 h-4 pointer-events-none"
@@ -123,7 +127,7 @@
                                  stroke-width="2"
                                  stroke-linecap="round"
                                  stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"/>
+                                <polyline points="6 9 12 15 18 9" />
                             </svg>
                         </div>
                     </div>
@@ -131,18 +135,18 @@
             </div>
         </div>
         {% if show_examples %}
-        <!-- Example repositories section -->
-        <div class="mt-4">
-            <p class="opacity-70 mb-1">Try these example repositories:</p>
-            <div class="flex flex-wrap gap-2">
-                {% for example in examples %}
-                <button onclick="submitExample('{{ example.url }}')"
-                        class="px-4 py-1 bg-[#EBDBB7] hover:bg-[#FFC480] text-gray-900 rounded transition-colors duration-200 border-[3px] border-gray-900 relative hover:-translate-y-px hover:-translate-x-px">
-                    {{ example.name }}
-                </button>
-                {% endfor %}
+            <!-- Example repositories section -->
+            <div class="mt-4">
+                <p class="opacity-70 mb-1">Try these example repositories:</p>
+                <div class="flex flex-wrap gap-2">
+                    {% for example in examples %}
+                        <button onclick="submitExample('{{ example.url }}')"
+                                class="px-4 py-1 bg-[#EBDBB7] hover:bg-[#FFC480] text-gray-900 rounded transition-colors duration-200 border-[3px] border-gray-900 relative hover:-translate-y-px hover:-translate-x-px">
+                            {{ example.name }}
+                        </button>
+                    {% endfor %}
+                </div>
             </div>
-        </div>
         {% endif %}
     </div>
 </div>

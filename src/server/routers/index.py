@@ -68,7 +68,7 @@ async def index_post(
         The type of pattern used for the query, specified by the user.
     pattern : str
         The pattern string used in the query, specified by the user.
-    tokenizer:
+    tokenizer: str
         Selected tokenizer for LLM model
 
     Returns
@@ -77,12 +77,4 @@ async def index_post(
         An HTML response containing the results of processing the form input and query logic,
         which will be rendered and returned to the user.
     """
-    return await process_query(
-        request,
-        input_text,
-        max_file_size,
-        pattern_type,
-        pattern,
-        True,
-        tokenizer
-    )
+    return await process_query(request, input_text, max_file_size, pattern_type, pattern, True, tokenizer)

@@ -15,13 +15,13 @@ from server.server_utils import Colors, log_slider_to_size
 
 
 async def process_query(
-        request: Request,
-        input_text: str,
-        slider_position: int,
-        pattern_type: str = "exclude",
-        pattern: str = "",
-        is_index: bool = False,
-        tokenizer_name: Optional[str] = "OPEN_AI"
+    request: Request,
+    input_text: str,
+    slider_position: int,
+    pattern_type: str = "exclude",
+    pattern: str = "",
+    is_index: bool = False,
+    tokenizer_name: Optional[str] = "OPEN_AI",
 ) -> _TemplateResponse:
     """
     Process a query by parsing input, cloning a repository, and generating a summary.
@@ -118,18 +118,11 @@ async def process_query(
 
     if len(content) > MAX_DISPLAY_SIZE:
         content = (
-                f"(Files content cropped to {int(MAX_DISPLAY_SIZE / 1_000)}k characters, "
-                "download full ingest to see more)\n" + content[:MAX_DISPLAY_SIZE]
+            f"(Files content cropped to {int(MAX_DISPLAY_SIZE / 1_000)}k characters, "
+            "download full ingest to see more)\n" + content[:MAX_DISPLAY_SIZE]
         )
 
-    _print_success(
-        query.url,
-        max_file_size,
-        pattern_type,
-        pattern,
-        summary,
-        tokenizer
-    )
+    _print_success(query.url, max_file_size, pattern_type, pattern, summary, tokenizer)
 
     context.update(
         {
@@ -193,7 +186,9 @@ def _print_error(url: str, e: Exception, max_file_size: int, pattern_type: str, 
     print(f" | {Colors.RED}{e}{Colors.END}")
 
 
-def _print_success(url: str, max_file_size: int, pattern_type: str, pattern: str, summary: str, tokenizer: Tokenizer) -> None:
+def _print_success(
+    url: str, max_file_size: int, pattern_type: str, pattern: str, summary: str, tokenizer: Tokenizer
+) -> None:
     """
     Print a formatted success message, including the URL, file size, pattern details, and a summary with estimated
     tokens, for debugging or logging purposes.
@@ -215,7 +210,7 @@ def _print_success(url: str, max_file_size: int, pattern_type: str, pattern: str
     _print_query(url, max_file_size, pattern_type, pattern)
 
     if tokenizer is not None:
-        estimated_tokens = summary[summary.index("Estimated tokens:") + len("Estimated "):]
+        estimated_tokens = summary[summary.index("Estimated tokens:") + len("Estimated ") :]
         print(f" | {Colors.PURPLE}{estimated_tokens}{Colors.END}")
     else:
         print(f" | {Colors.PURPLE}No estimated tokens{Colors.END}")
