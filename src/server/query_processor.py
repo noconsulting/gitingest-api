@@ -1,6 +1,7 @@
 """Process a query by parsing input, cloning a repository, and generating a summary."""
 
 from functools import partial
+from typing import Optional
 
 from fastapi import Request
 from starlette.templating import _TemplateResponse
@@ -14,12 +15,13 @@ from server.server_utils import Colors, log_slider_to_size
 
 
 async def process_query(
-    request: Request,
-    input_text: str,
-    slider_position: int,
-    pattern_type: str = "exclude",
-    pattern: str = "",
-    is_index: bool = False,
+        request: Request,
+        input_text: str,
+        slider_position: int,
+        pattern_type: str = "exclude",
+        pattern: str = "",
+        is_index: bool = False,
+        tokenizer_name: Optional[str] = "OPEN_AI"
 ) -> _TemplateResponse:
     """
     Process a query by parsing input, cloning a repository, and generating a summary.
@@ -41,6 +43,8 @@ async def process_query(
         Pattern to include or exclude in the query, depending on the pattern type.
     is_index : bool
         Flag indicating whether the request is for the index page (default is False).
+    tokenizer_name : str
+        Name of target tokenizer
 
     Returns
     -------
@@ -61,6 +65,10 @@ async def process_query(
     else:
         raise ValueError(f"Invalid pattern type: {pattern_type}")
 
+    tokenizer = None
+    if tokenizer_name != "NONE":
+        tokenizer = Tokenizer[tokenizer_name]
+
     template = "index.jinja" if is_index else "git.jinja"
     template_response = partial(templates.TemplateResponse, name=template)
     max_file_size = log_slider_to_size(slider_position)
@@ -72,6 +80,7 @@ async def process_query(
         "default_file_size": slider_position,
         "pattern_type": pattern_type,
         "pattern": pattern,
+        "tokenizer": tokenizer,
     }
 
     try:
@@ -81,8 +90,9 @@ async def process_query(
             from_web=True,
             include_patterns=include_patterns,
             ignore_patterns=exclude_patterns,
-            model_tokenizer=Tokenizer.OPEN_AI,  # we default to openAI token estimation (tiktoken)
+            model_tokenizer=tokenizer,
         )
+
         if not query.url:
             raise ValueError("The 'url' parameter is required.")
 
@@ -108,16 +118,17 @@ async def process_query(
 
     if len(content) > MAX_DISPLAY_SIZE:
         content = (
-            f"(Files content cropped to {int(MAX_DISPLAY_SIZE / 1_000)}k characters, "
-            "download full ingest to see more)\n" + content[:MAX_DISPLAY_SIZE]
+                f"(Files content cropped to {int(MAX_DISPLAY_SIZE / 1_000)}k characters, "
+                "download full ingest to see more)\n" + content[:MAX_DISPLAY_SIZE]
         )
 
     _print_success(
-        url=query.url,
-        max_file_size=max_file_size,
-        pattern_type=pattern_type,
-        pattern=pattern,
-        summary=summary,
+        query.url,
+        max_file_size,
+        pattern_type,
+        pattern,
+        summary,
+        tokenizer
     )
 
     context.update(
@@ -127,6 +138,7 @@ async def process_query(
             "tree": tree,
             "content": content,
             "ingest_id": query.id,
+            "tokenizer": tokenizer_name,
         }
     )
 
@@ -151,7 +163,7 @@ def _print_query(url: str, max_file_size: int, pattern_type: str, pattern: str) 
     """
     print(f"{Colors.WHITE}{url:<20}{Colors.END}", end="")
     if int(max_file_size / 1024) != 50:
-        print(f" | {Colors.YELLOW}Size: {int(max_file_size/1024)}kb{Colors.END}", end="")
+        print(f" | {Colors.YELLOW}Size: {int(max_file_size / 1024)}kb{Colors.END}", end="")
     if pattern_type == "include" and pattern != "":
         print(f" | {Colors.YELLOW}Include {pattern}{Colors.END}", end="")
     elif pattern_type == "exclude" and pattern != "":
@@ -181,7 +193,7 @@ def _print_error(url: str, e: Exception, max_file_size: int, pattern_type: str, 
     print(f" | {Colors.RED}{e}{Colors.END}")
 
 
-def _print_success(url: str, max_file_size: int, pattern_type: str, pattern: str, summary: str) -> None:
+def _print_success(url: str, max_file_size: int, pattern_type: str, pattern: str, summary: str, tokenizer: Tokenizer) -> None:
     """
     Print a formatted success message, including the URL, file size, pattern details, and a summary with estimated
     tokens, for debugging or logging purposes.
@@ -199,7 +211,11 @@ def _print_success(url: str, max_file_size: int, pattern_type: str, pattern: str
     summary : str
         A summary of the query result, including details like estimated tokens.
     """
-    estimated_tokens = summary[summary.index("Estimated tokens:") + len("Estimated ") :]
     print(f"{Colors.GREEN}INFO{Colors.END}: {Colors.GREEN}<-  {Colors.END}", end="")
     _print_query(url, max_file_size, pattern_type, pattern)
-    print(f" | {Colors.PURPLE}{estimated_tokens}{Colors.END}")
+
+    if tokenizer is not None:
+        estimated_tokens = summary[summary.index("Estimated tokens:") + len("Estimated "):]
+        print(f" | {Colors.PURPLE}{estimated_tokens}{Colors.END}")
+    else:
+        print(f" | {Colors.PURPLE}No estimated tokens{Colors.END}")

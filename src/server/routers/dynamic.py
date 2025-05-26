@@ -49,7 +49,7 @@ async def process_catch_all(
     input_text: str = Form(...),
     max_file_size: int = Form(...),
     pattern_type: str = Form(...),
-    pattern: str = Form(...),
+    pattern: str = Form(...)
 ) -> HTMLResponse:
     """
     Process the form submission with user input for query parameters.
@@ -82,5 +82,6 @@ async def process_catch_all(
         max_file_size,
         pattern_type,
         pattern,
-        is_index=False,
+        False,
+        "OPEN_AI" #when no parameter is possible, we default to openAI
     )

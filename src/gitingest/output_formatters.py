@@ -38,12 +38,16 @@ def format_node(node: FileSystemNode, query: IngestionQuery) -> Tuple[str, str, 
     _create_tree_structure(query, node)
 
     content = _gather_file_contents(node)
+
     token_estimate = _calculate_and_format_token_count(tree + content, query.model_tokenizer)
-    if token_estimate:
+
+    if token_estimate is not None:
         summary += f"\nEstimated tokens: {token_estimate}"
+        summary += f"\nTokenizer: {query.model_tokenizer}"
+    else:
+        summary += f"\nNo estimated tokens."
 
     return summary, tree, content
-
 
 def _create_summary_prefix(query: IngestionQuery, single_file: bool = False) -> str:
     """
