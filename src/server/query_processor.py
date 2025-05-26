@@ -205,6 +205,8 @@ def _print_success(
         The actual pattern string to include or exclude in the query.
     summary : str
         A summary of the query result, including details like estimated tokens.
+    tokenizer : Tokenizer
+        The tokenizer.
     """
     print(f"{Colors.GREEN}INFO{Colors.END}: {Colors.GREEN}<-  {Colors.END}", end="")
     _print_query(url, max_file_size, pattern_type, pattern)
